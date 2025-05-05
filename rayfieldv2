@@ -3,8 +3,8 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
     Name = "Nimbus ScriptHub",
     Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-    LoadingTitle = "ScriptHub!!",
-    LoadingSubtitle = "by ani",
+    LoadingTitle = "Nimbus Script Hub",
+    LoadingSubtitle = "by ani,fin and zejin",
     Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
  
     DisableRayfieldPrompts = false,
@@ -37,7 +37,7 @@ local Window = Rayfield:CreateWindow({
  local Tab = Window:CreateTab("Dead Rails", 4483362458) -- Title, Image
 
  local Button = Tab:CreateButton({
-    Name = "Dead Rails",
+    Name = "V.1 script",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/IamTheBestPersobLolo/nimmbus/refs/heads/main/deadrailsv1"))()
     end,
@@ -46,7 +46,7 @@ local Window = Rayfield:CreateWindow({
  local Tab = Window:CreateTab("BLR", 4483362458) -- Title, Image
 
  local Button = Tab:CreateButton({
-    Name = "BLR",
+    Name = "Ball Enlager V.2",
     Callback = function()
         loadstring(game:HttpGet("https://pastebin.com/raw/EZeBMd3g"))()
     end,
