@@ -111,3 +111,29 @@ local WalkSpeedSlider = Tab:CreateSlider({
     end,
 })
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+
+-- Create a folder in CoreGui to store visualizers
+local hitboxFolder = Instance.new("Folder")
+hitboxFolder.Name = "HitboxVisualizer"
+hitboxFolder.Parent = game.CoreGui
+
+local visualizers = {}
+
+-- Function to create a visual box around the hitbox
+local function createHitboxVisualizer(character)
+    -- Only add visualizer if the character has a HumanoidRootPart and Humanoid
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = character.HumanoidRootPart
+        local box = Drawing.new("Square")
+        box.Visible = false
+        box.Color = Color3.fromRGB(255, 0, 0)  -- Red box for hitbox
+        box.Thickness = 2
+        box.Filled = false
+        
+        -- Update box every frame
+        local connection
+        connection = RunService.RenderStepped:Connect
