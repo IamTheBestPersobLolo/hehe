@@ -96,3 +96,18 @@ local FOVSlider = Tab:CreateSlider({
     end,
 })
 
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+
+local WalkSpeedSlider = Tab:CreateSlider({
+    Name = "Walk Speed",
+    Range = {16, 100}, -- 16 is default, adjust the upper limit as needed
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = Humanoid.WalkSpeed,
+    Callback = function(Value)
+        Humanoid.WalkSpeed = Value
+    end,
+})
+
