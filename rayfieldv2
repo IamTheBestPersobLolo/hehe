@@ -1,11 +1,11 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-    Name = "BLR V.3 script",
+    Name = "Nimbus ScriptHub",
     Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-    LoadingTitle = "BLR Script",
-    LoadingSubtitle = "by ani, nex and zejin",
-    Theme = "Ocean", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+    LoadingTitle = "Nimbus Script Hub",
+    LoadingSubtitle = "by ani,nex and zejin",
+    Theme = "Serenity", -- Check https://docs.sirius.menu/rayfield/configuration/themes
  
     DisableRayfieldPrompts = false,
     DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
@@ -17,9 +17,9 @@ local Window = Rayfield:CreateWindow({
     },
  
     Discord = {
-       Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
-       Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
-       RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+       Enabled = True, -- Prompt the user to join your Discord server if their executor supports it
+       Invite = "FvJYBsu2", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+       RememberJoins = false  -- Set this to false to make them join the discord every time they load it up
     },
  
     KeySystem = false, -- Set this to true to use our key system
@@ -34,7 +34,25 @@ local Window = Rayfield:CreateWindow({
     }
  })
 
- local Tab = Window:CreateTab("GK", 4483362458) -- Title, Image
+ local Tab = Window:CreateTab("Dead Rails", 4483362458) -- Title, Image
+
+ local Button = Tab:CreateButton({
+    Name = "V.1 script",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/IamTheBestPersobLolo/nimmbus/refs/heads/main/deadrailsv1"))()
+    end,
+ })
+
+ local Tab = Window:CreateTab("BLR", 4483362458) -- Title, Image
+
+ local Button = Tab:CreateButton({
+    Name = "Ball Enlager V.2",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/EZeBMd3g"))()
+    end,
+ })
+
+ local Tab = Window:CreateTab("test", 4483362458) -- Title, Image
 
  local Toggle = Tab:CreateToggle({
     Name = "Toggle Example",
@@ -43,12 +61,16 @@ local Window = Rayfield:CreateWindow({
     Callback = function(Value)
         local Players = game:GetService("Players")
         local RunService = game:GetService("RunService")
+        
         local player = Players.LocalPlayer
         local character = player.Character or player.CharacterAdded:Wait()
         local hrp = character:WaitForChild("HumanoidRootPart")
         
         local autoGKEnabled = true
-        local gkSphere = Instance.new("Part")
+        local gkSphere
+        local ballToTrack
+        
+        gkSphere = Instance.new("Part")
         gkSphere.Name = "AutoGKZone"
         gkSphere.Shape = Enum.PartType.Ball
         gkSphere.Anchored = true
@@ -59,94 +81,94 @@ local Window = Rayfield:CreateWindow({
         gkSphere.Material = Enum.Material.ForceField
         gkSphere.Parent = workspace
         
-        local trackedBall = nil
-        local function findBall()
-            for _, obj in pairs(workspace:GetChildren()) do
-                if obj:IsA("Model") and obj:FindFirstChild("Handle") and obj.Name:lower():find("ball") then
-                    return obj.Handle
-                elseif obj:IsA("BasePart") and obj.Name:lower():find("ball") then
-                    return obj
-                end
-            end
-        end
-        
         RunService.RenderStepped:Connect(function()
             if not autoGKEnabled then return end
+        
             if character and hrp and gkSphere then
                 gkSphere.Position = hrp.Position
             end
         
-            local ball = findBall()
-            if ball then
-                ball.Size = Vector3.new(10, 10, 10)
-                trackedBall = ball
+            for _, obj in pairs(workspace:GetChildren()) do
+                if obj:IsA("Model") and obj:FindFirstChild("Handle") and obj.Name:lower():find("ball") then
+                    local handle = obj:FindFirstChild("Handle")
+                    if handle and handle:IsA("BasePart") then
+                        handle.Size = Vector3.new(10, 10, 10)
+                        if handle:FindFirstChild("TouchInterest") then
+                            local ti = handle.TouchInterest
+                            ti.Parent = nil
+                            ti.Parent = handle
+                        end
+                        ballToTrack = obj
+                    end
+                elseif obj:IsA("BasePart") and obj.Name:lower():find("ball") then
+                    obj.Size = Vector3.new(10, 10, 10)
+                    if obj:FindFirstChild("TouchInterest") then
+                        local ti = obj.TouchInterest
+                        ti.Parent = nil
+                        ti.Parent = obj
+                    end
+                    ballToTrack = obj
+                end
             end
         end)
         
         RunService.RenderStepped:Connect(function()
-            if not autoGKEnabled or not trackedBall then return end
+            if not autoGKEnabled or not ballToTrack then return end
         
-            if (trackedBall.Position - gkSphere.Position).Magnitude <= (gkSphere.Size.X / 2) then
-                trackedBall.Anchored = true
-                trackedBall.CFrame = hrp.CFrame + Vector3.new(0, 2, 0)
+            local handle = ballToTrack:FindFirstChild("Handle") or ballToTrack
+            if not handle then return end
         
-                firetouchinterest(hrp, trackedBall, 0)
-                firetouchinterest(hrp, trackedBall, 1)
-        
-                task.delay(0.15, function()
-                    trackedBall.Anchored = false
-                end)
+            if (handle.Position - gkSphere.Position).Magnitude <= (gkSphere.Size.X / 2) then
+                handle.CFrame = hrp.CFrame + Vector3.new(0, 2, 0)
+                firetouchinterest(hrp, handle, 0)
+                firetouchinterest(hrp, handle, 1)
             end
         end)
     end,
  })
 
- local Tab = Window:CreateTab("HitBox Visualiser", 4483362458) -- Title, Image
+ local Tab = Window:CreateTab("Universal", 4483362458) -- Title, Image
 
- local Players = game:GetService("Players")
- local RunService = game:GetService("RunService")
- 
- local function createBox(part)
-     local box = Instance.new("BoxHandleAdornment")
-     box.Size = part.Size * 2
-     box.Adornee = part
-     box.AlwaysOnTop = true
-     box.ZIndex = 10
-     box.Color3 = Color3.fromRGB(255, 0, 0)
-     box.Transparency = 0.3
-     box.Name = "HitboxVisualizer"
-     box.Parent = part
-     return box
- end
- 
- local function visualizeHitboxes()
-     for _, plr in pairs(Players:GetPlayers()) do
-         if plr.Character then
-             local hrp = plr.Character:FindFirstChild("HumanoidRootPart") or plr.Character:FindFirstChild("Torso")
-             if hrp and not hrp:FindFirstChild("HitboxVisualizer") then
-                 createBox(hrp)
-             end
-         end
-     end
- end
- 
- RunService.RenderStepped:Connect(visualizeHitboxes)
+ local JumpSlider = Tab:CreateSlider({
+    Name = "Jump Height",
+    Range = {50, 200}, -- Min and Max jump power
+    Increment = 10,
+    Suffix = "Power",
+    CurrentValue = 50, -- Default
+    Callback = function(value)
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").JumpPower = value
+        end
+    end,
+})
 
- local Tab = Window:CreateTab("Tp to ball", 4483362458) -- Title, Image
-
- local Button = Tab:CreateButton({
-    Name = "Button Example",
-    Callback = function()
-        local Players = game:GetService("Players")
-        local player = Players.LocalPlayer
-        
-        local function teleportToBall()
-            local ball = workspace:FindFirstChild("Football") or workspace:FindFirstChildWhichIsA("Part", true)
-            if ball then
-                player.Character:MoveTo(ball.Position)
+local FlyToggle = Tab:CreateToggle({
+    Name = "Fly Mode",
+    CurrentValue = false,
+    Callback = function(isFlying)
+        if isFlying then
+            loadstring(game:HttpGet("https://pastebin.com/raw/ySL2yGQW"))() -- Fly on
+        else
+            -- Disable fly by resetting HumanoidRootPart velocity (basic approach)
+            local hrp = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.Velocity = Vector3.new(0, 0, 0)
             end
         end
-        
-        teleportToBall()
     end,
- })
+})
+
+local Camera = workspace.CurrentCamera
+
+local FOVSlider = Tab:CreateSlider({
+    Name = "Universal Field of View",
+    Range = {70, 120},
+    Increment = 10,
+    Suffix = "°",
+    CurrentValue = Camera.FieldOfView,
+    Callback = function(Value)
+        Camera.FieldOfView = Value
+    end,
+})
+
