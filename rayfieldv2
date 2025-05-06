@@ -4,8 +4,8 @@ local Window = Rayfield:CreateWindow({
     Name = "Nimbus ScriptHub",
     Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
     LoadingTitle = "Nimbus Script Hub",
-    LoadingSubtitle = "by ani,fin and zejin",
-    Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+    LoadingSubtitle = "by ani,nex and zejin",
+    Theme = "Serenity", -- Check https://docs.sirius.menu/rayfield/configuration/themes
  
     DisableRayfieldPrompts = false,
     DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
@@ -51,6 +51,81 @@ local Window = Rayfield:CreateWindow({
         loadstring(game:HttpGet("https://pastebin.com/raw/EZeBMd3g"))()
     end,
  })
+
+ local Tab = Window:CreateTab("test", 4483362458) -- Title, Image
+
+ local Button = Tab:CreateButton({
+    Name = "Button Example",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        
+        local player = Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local hrp = character:WaitForChild("HumanoidRootPart")
+        
+        local autoGKEnabled = true
+        local gkSphere
+        local ballToTrack
+        
+        gkSphere = Instance.new("Part")
+        gkSphere.Name = "AutoGKZone"
+        gkSphere.Shape = Enum.PartType.Ball
+        gkSphere.Anchored = true
+        gkSphere.CanCollide = false
+        gkSphere.Transparency = 0.5
+        gkSphere.Size = Vector3.new(28, 28, 28)
+        gkSphere.Color = Color3.fromRGB(255, 255, 255)
+        gkSphere.Material = Enum.Material.ForceField
+        gkSphere.Parent = workspace
+        
+        RunService.RenderStepped:Connect(function()
+            if not autoGKEnabled then return end
+        
+            if character and hrp and gkSphere then
+                gkSphere.Position = hrp.Position
+            end
+        
+            for _, obj in pairs(workspace:GetChildren()) do
+                if obj:IsA("Model") and obj:FindFirstChild("Handle") and obj.Name:lower():find("ball") then
+                    local handle = obj:FindFirstChild("Handle")
+                    if handle and handle:IsA("BasePart") then
+                        handle.Size = Vector3.new(10, 10, 10)
+                        if handle:FindFirstChild("TouchInterest") then
+                            local ti = handle.TouchInterest
+                            ti.Parent = nil
+                            ti.Parent = handle
+                        end
+                        ballToTrack = obj
+                    end
+                elseif obj:IsA("BasePart") and obj.Name:lower():find("ball") then
+                    obj.Size = Vector3.new(10, 10, 10)
+                    if obj:FindFirstChild("TouchInterest") then
+                        local ti = obj.TouchInterest
+                        ti.Parent = nil
+                        ti.Parent = obj
+                    end
+                    ballToTrack = obj
+                end
+            end
+        end)
+        
+        RunService.RenderStepped:Connect(function()
+            if not autoGKEnabled or not ballToTrack then return end
+        
+            local handle = ballToTrack:FindFirstChild("Handle") or ballToTrack
+            if not handle then return end
+        
+            if (handle.Position - gkSphere.Position).Magnitude <= (gkSphere.Size.X / 2) then
+                handle.CFrame = hrp.CFrame + Vector3.new(0, 2, 0)
+                firetouchinterest(hrp, handle, 0)
+                firetouchinterest(hrp, handle, 1)
+            end
+        end)
+    end,
+ })
+
+
  local Tab = Window:CreateTab("Universal", 4483362458) -- Title, Image
 
  local JumpSlider = Tab:CreateSlider({
@@ -87,8 +162,8 @@ local Camera = workspace.CurrentCamera
 
 local FOVSlider = Tab:CreateSlider({
     Name = "Universal Field of View",
-    Range = {70, 360},
-    Increment = 1,
+    Range = {70, 120},
+    Increment = 10,
     Suffix = "°",
     CurrentValue = Camera.FieldOfView,
     Callback = function(Value)
